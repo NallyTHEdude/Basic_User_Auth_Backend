@@ -1,0 +1,27 @@
+{
+  "name": "project_management",
+  "version": "1.0.0",
+  "description": "backend for project management application for beginners",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [
+    "backend",
+    "api",
+    "nodejs",
+    "mongoDB"
+  ],
+  "author": "Nawaz",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prettier": "3.6.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0"
+  }
+}

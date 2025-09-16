@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 
 connectDB()
     .then(() => {
-        console.log(`Server is running at http://localhost:${PORT}`);
+        console.log(`Mongodb is perfectly connected`);
     })
     .catch((err) => {
         console.error('Failed to connect to the database:', err);

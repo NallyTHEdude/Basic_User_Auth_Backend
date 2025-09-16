@@ -23,7 +23,6 @@ import healthCheckRouter from './routes/healthCheck.routes.js';
 
 
 // routes
-
 app.use('/api/v1/health', healthCheckRouter);
 
 app.get('/', (req, res) => {

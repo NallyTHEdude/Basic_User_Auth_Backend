@@ -2,7 +2,7 @@ import {User} from "../models/user.models.js";
 import { ApiResponse } from '../utils/api-response.js';
 import { ApiError } from '../utils/api-error.js';
 import { asyncHandler } from '../utils/async-handler.js';
-import { sendEmail } from '../utils/email-service.js';
+import { sendEmail, emailVerificationMailGenContent } from '../utils/mail.js';
 
 
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -49,12 +49,12 @@ const registerUser = asyncHandler(async (req, res) => {
         subject: 'Please verify your email',
         mailgenContent: emailVerificationMailGenContent(
             user.username,
-            `${req.protocol}://${req.get("host")}/api/v1/users/verify-email${unHashedToken}`
+            `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`
         ),
          
     });
 
-    const createdUser = User.findById(user._id).select("-password -refreshToken -emailVerificationToken -emailVerificationExpiry");
+    const createdUser = await User.findById(user._id).select("-password -refreshToken -emailVerificationToken -emailVerificationExpiry");
     if(!createdUser){
         throw new ApiError(500, "User registration failed");
     }

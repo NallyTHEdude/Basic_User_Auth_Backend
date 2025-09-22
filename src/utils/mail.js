@@ -44,13 +44,31 @@ const emailVerificationMailGenContent = (username, verificationUrl) => {
     return {
         body: {
             name: username,
-            intro: `Welcome to this app mad by Nawaz , We are excited to have you on board`,
+            intro: `Welcome to this app made by Nawaz , We are excited to have you on board`,
             action: {
                 instructions: `to verify your email, please click the following button:`,
                 button: {
                     color: `#22BC66`,
                     text: `Verify your email`,
                     link: verificationUrl,
+                },
+            },
+            outro: "Need help, or have questions? just reply to this email, we'd love to help.",
+        }
+    };
+};
+
+const loginVerificationMailGenContent = (username, logoutUrl) => {
+    return {
+        body: {
+            name: username,
+            intro: `Welcome back , We are excited to have you on board, a login to your account was just made.`,
+            action: {
+                instructions: `to Logout, please click the following button:`,
+                button: {
+                    color: `#FF2A04`,
+                    text: `Logout`,
+                    link: logoutUrl,
                 },
             },
             outro: "Need help, or have questions? just reply to this email, we'd love to help.",
@@ -78,6 +96,7 @@ const forgotPasswordMailGenContent = (username, passwordResetUrl) => {
 
 export {
     emailVerificationMailGenContent,
+    loginVerificationMailGenContent,
     forgotPasswordMailGenContent,
     sendEmail
 };

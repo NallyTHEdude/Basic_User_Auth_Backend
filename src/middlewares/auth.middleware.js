@@ -3,9 +3,9 @@ import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import jwt from "jsonwebtoken";
 
-export const verifyJWT = asyncHandler(async (req, res, next) => {
+const verifyJWT = asyncHandler(async (req, res, next) => {
     const accessToken = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
-    if(!token){
+    if(!accessToken){
         throw new ApiError(401, "Access token is missing"); 
     }
 
@@ -22,3 +22,5 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
         throw new ApiError(401, "Invalid access token");
     }
 });
+
+export default verifyJWT;

@@ -60,7 +60,7 @@ const registerUser = asyncHandler(async (req, res) => {
         subject: 'Please verify your email',
         mailgenContent: emailVerificationMailGenContent(
             user.username,
-            `${req.protocol}://${req.get('host')}/api/v1/users/verify-email/${unHashedToken}`,
+            `${req.protocol}://${req.get('host')}/api/v1/auth/verify-email/${unHashedToken}`,
         ),
     });
 
@@ -252,9 +252,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     try {
         const decodedRefreshToken = jwt.verify(
             incomingRefreshToken,
-            process.env.JWT_REFRESH_SECRET,
+            process.env.REFRESH_TOKEN_SECRET,
         );
-        const user = await User.findById(decodedRefreshToken.userId);
+        const user = await User.findById(decodedRefreshToken._id);
         if (!user) {
             throw new ApiError(401, 'Invalid refresh token');
         }
@@ -322,6 +322,7 @@ const forgotPasswordRequest = asyncHandler(async (req, res) => {
         );
 });
 
+//TODO: check how this works , and test it , maybe debug it
 const resetForgotPassword = asyncHandler(async (req, res) => {
     const { resetToken } = req.params;
     const { newPassword } = req.body;
@@ -352,24 +353,18 @@ const resetForgotPassword = asyncHandler(async (req, res) => {
 });
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
-    const {oldPassword, newPassword} = req.body;
+    const { oldPassword, newPassword } = req.body;
     const user = await User.findById(req.user?._id);
     const isPasswordValid = await user.comparePassword(oldPassword);
-    if(!isPasswordValid){
-        throw new ApiError(400, "Invalid Old Password")
+    if (!isPasswordValid) {
+        throw new ApiError(400, 'Invalid Old Password');
     }
     user.password = newPassword;
-    user.save({validateBeforeSave: false});
+    user.save({ validateBeforeSave: false });
 
     return res
         .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                {},
-                "Password changed successfully"
-            )
-        )
+        .json(new ApiResponse(200, {}, 'Password changed successfully'));
 });
 
 export {
@@ -382,5 +377,5 @@ export {
     refreshAccessToken,
     forgotPasswordRequest,
     resetForgotPassword,
-    changeCurrentPassword
+    changeCurrentPassword,
 };

@@ -291,8 +291,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 const forgotPasswordRequest = asyncHandler(async (req, res) => {
-    const { email } = req.body.email;
-    const user = User.findOne({ email });
+    const { email } = req.body;
+    const user = await User.findOne({ email });
     if (!user) {
         throw new ApiError(404, 'User Not Found');
     }
@@ -302,6 +302,7 @@ const forgotPasswordRequest = asyncHandler(async (req, res) => {
     user.forgotPasswordTokenExpiry = tokenExpiry;
     await user.save({ validateBeforeSave: false });
 
+    // access the link in email to get unhashed token and reset password
     await sendEmail({
         email: user.email,
         subject: 'Password Reset Request',
@@ -330,7 +331,7 @@ const resetForgotPassword = asyncHandler(async (req, res) => {
     const hashedToken = crypto
         .createHash('sha256')
         .update(resetToken)
-        .digest(hex);
+        .digest('hex');
 
     const user = await User.findOne({
         forgotPasswordToken: hashedToken,
@@ -346,6 +347,15 @@ const resetForgotPassword = asyncHandler(async (req, res) => {
 
     user.password = newPassword;
     await user.save({ validateBeforeSave: false });
+
+    // await sendEmail({
+    //     email: user.email,
+    //     subject: 'Password Reset Request',
+    //     mailgenContent: forgotPasswordMailGenContent(
+    //         user.username,
+    //         `${process.env.FORGOT_PASSWORD_REDIRECT_URL}/${resetToken}`,
+    //     ),
+    // });
 
     return res
         .status(200)

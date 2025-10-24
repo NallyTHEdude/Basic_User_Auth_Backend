@@ -9,7 +9,7 @@ const router = Router();
 //unsecured routes
 router.route('/register').post(userRegisterValidator(), validate, registerUser);
 router.route('/login').post(userLoginValidator(), validate, login);
-router.route('/verify-email/:verificationToken').get(verifyEmail);
+router.route('/verify-email/:verificationToken').get(verifyEmail); // route is being hit via link in email in registeration mail
 router.route('/refresh-token').post(refreshAccessToken);
 router.route('/forgot-password').post(userForgotPasswordValidator(), validate, forgotPasswordRequest);
 router.route('/reset-password/:resetToken').post(userResetForgotPasswordValidator(), validate, resetForgotPassword);

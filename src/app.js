@@ -24,10 +24,12 @@ app.use(
 // routes import
 import healthCheckRouter from './routes/healthCheck.routes.js';
 import authRouter from './routes/auth.routes.js';
+import userRouter from './routes/user.routes.js';
 
 // routes
 app.use('/api/v1/health', healthCheckRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/user', userRouter);
 
 app.get('/', (req, res) => {
     res.send('Welcome to BaseCampy');

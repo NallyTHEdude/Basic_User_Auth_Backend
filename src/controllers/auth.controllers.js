@@ -118,7 +118,7 @@ const login = asyncHandler(async (req, res) => {
         subject: 'Login verification mail',
         mailgenContent: loginVerificationMailGenContent(
             user.username,
-            `${req.protocol}://${req.get('host')}/api/v1/users/logout`,
+            `${req.protocol}://${req.get('host')}/api/v1/auth/logout`,
         ),
     });
 

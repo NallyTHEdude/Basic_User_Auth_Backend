@@ -39,6 +39,8 @@ const sendEmail = async (options)=>{
     }
 }
 
+
+// ---- AUTH MAIL FORMATS ----
 const emailVerificationMailGenContent = (username, verificationUrl) => {
     return {
         body: {
@@ -56,14 +58,13 @@ const emailVerificationMailGenContent = (username, verificationUrl) => {
         }
     };
 };
-
 const loginVerificationMailGenContent = (username, logoutUrl) => {
     return {
         body: {
             name: username,
             intro: `Welcome back , We are excited to have you on board, a login to your account was just made.`,
             action: {
-                instructions: `to Logout, please click the following button:`,
+                instructions: `if you did not login and want to Logout, please click the following button:`,
                 button: {
                     color: `#FF2A04`,
                     text: `Logout`,
@@ -93,10 +94,42 @@ const forgotPasswordMailGenContent = (username, passwordResetUrl) => {
     };
 };
 
+
+//----USER MAIL FORMATS ----
+const emailChangedMailGenContent = (username, passwordResetUrl, newEmail) => {
+    return {
+        body: {
+            name: username,
+            intro: `We received a request to change your email, `,
+            action: {
+                instructions: `if you did not ask for email change, click the button belwo to reset your password`,
+                button: {
+                    color: `#DC4D2F`,
+                    text: `Reset Password`,
+                    link: passwordResetUrl,
+                },
+            },
+            outro: "Need help, or have questions? just reply to this email, we'd love to help.",
+        }
+    };
+}
+const accountDeletionMailGenContent = (username) => ({
+    body: {
+        name: username,
+        intro: `Your account has been successfully deleted.`,
+        outro: "We’re sorry to see you go. If you have any feedback or need assistance, feel free to reach out.",
+    }
+});
+
+
 export {
+    sendEmail,
+
     emailVerificationMailGenContent,
     loginVerificationMailGenContent,
     forgotPasswordMailGenContent,
-    sendEmail
+
+    emailChangedMailGenContent,
+    accountDeletionMailGenContent
 };
 

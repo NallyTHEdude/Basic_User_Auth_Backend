@@ -5,8 +5,8 @@
 | Route | Method | Middleware | Controller | Description |
 | :--- | :--- | :--- | :--- | :--- |
 | `/profile` | GET | `verifyJWT` | `getUserProfile` | Get detailed user profile |
-| `/update` | PUT | `verifyJWT`, `validate` | `updateUserDetails` | Update username, email, or fullName |
-| `/avatar` | PATCH | `verifyJWT`, `upload.single('avatar')` | `updateAvatar` | Update profile picture |
+| `/update-details` | PUT | `verifyJWT`, `validate` | `updateUserDetails` | Update username, email, or fullName |
+| `/update-avatar` | PSOT | `verifyJWT`, `upload.single('avatar')` | `updateAvatar` | Update profile picture |
 | `/delete-account` | DELETE | `verifyJWT`, `validate` | `deleteAccount` | Permanently delete user account |
 
 ---

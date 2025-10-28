@@ -2,6 +2,7 @@ import { ApiError } from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { sendEmail, emailChangedMailGenContent, accountDeletionMailGenContent } from "../utils/mail.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 import { User } from '../models/user.models.js';
 
 const getUserDetails = asyncHandler(async (req, res) => {
@@ -140,9 +141,53 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
     );
 });
 
+const updateUserAvatar = asyncHandler(async (req, res) => {
+    const avatarLocalPath = req?.file?.path;
+
+    if(!avatarLocalPath){
+        throw new ApiError(400, 'Avatar file is required');
+    }
+
+    const currentUser = await User.findById(req.user._id);
+
+    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    if(!avatar){
+        throw new ApiError(500, 'Something went wrong while uploading avatar');
+    }
+
+    const user = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set:{
+                'avatar.url': avatar.url,              // Nested field update
+                'avatar.localPath': avatar.public_id   // Nested field update
+            }
+        },
+        {new: true}
+    ).select('-password -refreshToken');
+
+    // Delete old avatar from Cloudinary (if exists and not default placeholder)
+    if(currentUser.avatar?.localPath && 
+       !currentUser.avatar.url.includes('placehold.co')){
+        try {
+            await deleteFromCloudinary(currentUser.avatar.localPath);
+        } catch(err) {
+            console.log('Failed to delete old avatar:', err);
+        }
+    }
+
+    res.status(200).json(
+        new ApiResponse(
+            200,
+            {user},
+            'User avatar updated successfully'
+        )
+    );
+});
 
 export {
     getUserDetails,
     updateUserDetails,
-    deleteUserAccount
+    deleteUserAccount,
+    updateUserAvatar
 }

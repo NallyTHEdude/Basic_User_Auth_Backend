@@ -8,7 +8,7 @@ const router = Router();
 
 // user routes
 router.route('/profile').get(verifyJWT,getUserDetails);
-router.route('/update').put(verifyJWT,userUpdateValidator(),updateUserDetails);
+router.route('/update-details').put(verifyJWT,userUpdateValidator(),updateUserDetails);
 router.route('/delete-account').delete(verifyJWT,userDeleteAccountValidator(), deleteUserAccount);
 router.route('/update-avatar').post(verifyJWT, upload.single('avatar'),updateUserAvatar);
 

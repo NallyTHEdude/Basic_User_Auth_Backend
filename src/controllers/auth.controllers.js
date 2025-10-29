@@ -10,6 +10,7 @@ import {
 } from '../utils/mail.js';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import { AvailableUserRoles } from '../utils/constants.js';
 
 const generateAccessAndRefreshTokens = async (userId) => {
     try {
@@ -27,24 +28,37 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
 const registerUser = asyncHandler(async (req, res) => {
     const { username, email, password, role } = req.body;
+
+    if(!role){
+        throw new ApiError(400, 'User role is required');
+    }
+
+    const normalizedRole = role.toLowerCase();
+
+    if(!AvailableUserRoles.includes(normalizedRole)){
+        throw new ApiError(400, 'Invalid user role');
+    }
+
+
     const existingUser = await User.findOne({
         $or: [{ email }, { username }],
     });
-
+    
     // if user already exists, throw error
     if (existingUser) {
         throw new ApiError(
             409,
             'User with email or username already exists',
-            [],
         );
     }
+    
 
     // if user does not exist, create new user
     const user = await User.create({
         email,
         password,
         username,
+        role: normalizedRole,
         isEmailVerified: false,
     });
 
@@ -74,8 +88,11 @@ const registerUser = asyncHandler(async (req, res) => {
     return res
         .status(201)
         .json(
-            new ApiResponse(201, { user: createdUser }),
-            'User registered successfully',
+            new ApiResponse(
+                201, 
+                { user: createdUser },
+                'User registered successfully'
+            )
         );
 });
 

@@ -2,9 +2,17 @@ import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { AvailableUserRoles, UserRolesEnum } from './constants.js'; // adjust path as needed
+
 
 const userSchema = new Schema(
     {
+        role: {
+            type: String,
+            required: true,
+            enum: AvailableUserRoles,
+            default: UserRolesEnum.MEMBER
+        },
         avatar: {
             type: {
                 url: String,
